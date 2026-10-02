@@ -1,0 +1,200 @@
+C *****************************************************************************
+C **                                                                         **
+C **  INPUT:  Read DEFAULT.TXT or internal data set.                         **
+C **                                                                         **
+C *****************************************************************************
+
+      SUBROUTINE INPUT
+
+      IMPLICIT NONE
+
+      INCLUDE  'paramsN.f'
+
+C ----------------------------------------------------------------------------
+C --  COMMON variable declarations                                          --
+C ----------------------------------------------------------------------------
+
+      COMMON /TITLE/ TITLE
+      COMMON /DATES/   DDATE
+      COMMON /PARAM1/ DIAM, LENGTH(MAXSEAL),CLEAR(0:MAXSEAL)
+      COMMON /PARAM2/ EXO, EYO
+      COMMON /PARAM3/ EMU, RHO, RPM, PS, PA, PC,LOSXSI,LOSXVI, ALPHA
+      COMMON /PARAM4/ CINLET(MAXSEAL), CEXIT(MAXSEAL)
+      COMMON /PARAM5/ TSUP,ALPHAT, KB, DIAMEX, SPHT
+      COMMON /ENTVIS/ EMUI
+      COMMON /THERM1/ KFL
+      COMMON /ALIGNM/ AXO, AYO, ZO(MAXSEAL)
+      COMMON /FLAGS/ INERL, INERP, ITURB, ICAV
+      COMMON /FACTORS/ REP, REY, MSPEED, SPEED,
+     +                 klosy,klosv, SWIRL, PCAV, ALFU, BETU, ALFP
+      COMMON /NODES/ Nxt, Nyi,Nseal
+      COMMON /SOUCEA/ SMASS, MPEPS, MMP, SFLOW
+      COMMON /SOURCEB/ ITER, ITMAX, ITPMAX
+      COMMON /SOURCET/ TEPS, TMAXT, ALFT
+      COMMON /FREQ/ FREQU, SIGMA, L1, RES
+      COMMON /MOODY/ AMOD, BMOD, RUGR, RUGS, EXPO
+      COMMON /COMPRE/L4, Beta, Pcavi              
+      COMMON /ISOTH/ ISOFLAG
+
+      CHARACTER*60 TITLE
+      CHARACTER*10 DDATE
+      DOUBLE PRECISION CLEAR, DIAM, LENGTH, LGROOVE, AXO, AYO, ZO
+      DOUBLE PRECISION EXO, EYO
+      DOUBLE PRECISION EMU, RHO, RPM, PS, PA, PC,LOSXSI,LOSXVI, ALPHA
+      DOUBLE PRECISION CINLET, CEXIT
+      DOUBLE PRECISION AMOD, BMOD, RUGR, RUGS, EXPO, EMUI
+      INTEGER INERL, INERP, ITURB, ICAV
+      DOUBLE PRECISION REP, REY, MSPEED, SPEED,
+     +                 klosy,klosv, SWIRL, PCAV, ALFU, BETU, ALFP
+      INTEGER Nxt, Nyi, Nseal ,KSEAL, ISOFLAG
+      DOUBLE PRECISION SMASS, MPEPS, MMP, SFLOW
+      INTEGER ITER, ITMAX, ITPMAX
+      INTEGER J, NJ
+      DOUBLE PRECISION FREQU, SIGMA, L1, RES
+      DOUBLE PRECISION L4, BETA, Pcavi
+      DOUBLE PRECISION TSUP,ALPHAT, KB, DIAMEX, SPHT,KFL
+      DOUBLE PRECISION TEPS, TMAXT, ALFT
+      
+C ----------------------------------------------------------------------------
+C --  INPUT code                                                            --
+C ----------------------------------------------------------------------------
+      OPEN (UNIT=2, FILE='DEFAULT.TXT', STATUS='OLD', ERR=10)
+      READ (2, 100) TITLE 
+  100 FORMAT (A60)
+      READ (2, 110) DDATE 
+  110 FORMAT (A10)
+      READ (2,*) ISOFLAG
+      READ (2, *) Nxt 
+      READ (2, *) Nyi
+      READ (2, *) NSEAL
+      DO Kseal=1, Nseal
+        READ (2, *) CINLET(Kseal)
+        READ (2, *) CEXIT(Kseal)
+        READ (2, *) LENGTH(Kseal) 
+      END DO
+      read (2, *) DIAM
+      READ (2, *) DIAMEX
+      READ (2, *) EXO 
+      READ (2, *) EYO 
+      READ (2, *) EMU
+      READ (2, *) EMUI
+      READ (2, *) RHO
+      READ (2, *) TSUP
+      READ (2, *) ALPHAT
+      READ (2, *) KB
+      READ (2, *) KFL
+      READ (2, *) SPHT 
+      READ (2, *) RPM 
+      READ (2, *) PS 
+      READ (2, *) PA 
+      READ (2, *) PC 
+      READ (2, *) LOSXSI 
+      READ (2, *) LOSXVI
+      READ (2, *) ALPHA 
+      READ (2, *) INERP 
+      READ (2, *) ITMAX 
+      READ (2, *) ALFU 
+      READ (2, *) ALFP 
+      READ (2, *) ALFT
+      READ (2, *) TEPS
+      READ (2, *) MPEPS 
+      READ (2, *) RUGR
+      READ (2, *) RUGS
+      READ (2, *) AMOD
+      READ (2, *) BMOD
+      READ (2, *) EXPO
+      READ (2, *) BETA
+      READ (2, *) AXO, AYO
+
+      do Kseal=1, Nseal
+       read(2,*)ZO(Kseal)
+      end do
+      INERL=0
+
+      FREQU=RPM/60.0
+      IF (RPM.EQ.(0.0))  FREQU=100.0
+      DO Kseal=0, Nseal
+         CLEAR(Kseal)=0.0
+      END DO
+      CLOSE (UNIT=2)
+      WRITE (6, *) 'Default data read from file DEFAULT.TXT.'
+      RETURN
+
+   10 WRITE (6, *) 'Error accessing file DEFAULT.TXT'
+      WRITE (6, *) 'Loading internal default data set.'
+      TITLE='Allaire Seal test case' 
+      DDATE='04/26/98'
+      ISOFLAG=1
+      Nxt=21                ! # of circ. grid points on mesh
+      Nyi=7                 ! # of axial grid points on mesh
+      NSEAL=1
+C                           !......................................
+
+      CINLET(1)=6.35E-4     ! INLET Radial clearance (m)    
+      CEXIT(1)=CINLET(1)    ! EXIT radial clearance (m)    
+                            ! 
+      DIAM=0.2032           ! Journal diameter (m)
+      DIAMEX=0.3032         ! EXTERNAL FLOATING RING DIAMETER
+      LENGTH(1)=0.0508      ! Journal length (m)     
+C  !........................!......................................
+                            ! Equilibrium or initial condition
+      EXO=0.0               ! S-S or Initial X eccentricity
+      EYO=0.0               !  "  "     "    Y      "
+      AXO=0.0D0             ! Angular misalignment about X axis
+      AYO=0.0D0             ! Angular misalignment about Y axis
+      ZO(1) = 0.0D0         ! Rotor axis crosses Z axis [m]
+C  !........................! Surface roughness parameters
+      RUGR=0.0              ! Relative to TYP Clearance
+      RUGS=RUGR             !
+                            !
+C  !........................! Moody's Coefficients
+      AMOD=0.001375         !
+      BMOD=5.E5             !
+      EXPO=1/2.65             !
+                            !
+C  !........................! Physical properties and conditions
+      EMU=4.1359E-4         ! Absolute viscosity (N-s/m2) 
+      EMUI=EMU              !
+      RHO=908.1825          ! Density (kg/m3)
+                            ! at Pdischarge=Pa
+                            !
+C  !........................! Seal Thermal Properties
+      TSUP=49               !
+      ALPHAT=0.033          !
+      KB=50.                !
+      KFL=0.14              !
+      SPHT=2000.            !
+
+C  !........................! Operating conditions
+                            !.....................
+      RPM=1000.             ! Rotating speed (rpm)
+C
+      FREQU=RPM/60.0
+C
+      PS=1.3789E+6          ! Pressure supply (Pa)
+      PA=0.0                ! External pressure (Pa)
+      PC=PA                 ! Cavitation pressure (Pa)
+      BETA=0.0              ! compressibility parameter (1/Pa)
+      LOSXSI=0.5            ! Inertia entrance loss coefficient k=(1+Losxsi)/2
+      LOSXVI=0.0
+      ALPHA=0.5             ! Swirl fraction
+                            !
+                            !
+C !.........................! Logical Parameters (1: Yes, 0: No)
+      INERL=0               ! Fluid inertia effects on lands
+      INERP=1               ! Fluid inertia offects on recess edges
+                            ! 
+C !.........................! Parameters
+      ITMAX=99              ! Maximum # of iterations for convergence on lands
+      ALFU=0.9              ! Under_relaxation for moments equations
+      ALFP=0.80             ! Under_relaxation for pressure correction
+      ALFT=0.9              ! Under_relaxation for temperature equations
+     
+      TEPS=0.01             ! Convergence criteria for temperature on lands
+      MPEPS=0.001          ! Convergence criteria for SUM(Mass source) on lands
+
+      DO Kseal=0, Nseal
+        Clear(Kseal)=0.0
+      END DO
+      END ! INPUT 2/18/90
+          !   mod  3/1/90
