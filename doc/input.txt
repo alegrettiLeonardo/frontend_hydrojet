@@ -1,0 +1,172 @@
+! Título do caso (apenas informativo)
+ 1 pad (5 pocket) Default data water HJB
+
+! Data e hora (apenas informativo, não é lido pelo solver)
+ 21/11/2024. 15:38:31
+
+! Linha 3:
+! [NPADS] [NPOCKETS_PAD] [NXT (pontos circunf. land/selo)]
+! [NPC (pontos circunf. no recess – hidro)] [NLA/NYI (pontos axiais land)]
+! [NPA (pontos axiais no recess – hidro)] [IFULL (1=360°,0=pads)]
+! [ITAPER (opção de folga cônica)] [IROW_HST (fileira hidrostat.)]
+! [NLOBES (lóbulos selo)] [ITYPE_PAD (1=tilting,0=fixed)]
+ 2             0             25            0             8             0             0             2             2             1             0 
+
+! Linha 4:
+! [IFILM_INERTIA (1=inclui inércia no filme)] [IINLET_INERTIA (1=perdas inerciais entrada/saída)]
+! [MAXIT_LAND] [MAXIT_RECESS] [FLUID_TYPE (1=H2,2=N2,3=O2,4=CH4,5=ar,6=água,7=óleo,8=outro)]
+! [IWORN (1=mancal/selo desgastado)] [ISTEPPED_CLEAR (1=folga axial escalonada)]
+! [BEARING_TYPE (1=hidrostático,2=selo,3=hidrodinâmico)]
+! [THERMAL_OPTION (modelo térmico)] [LIFT_FLAG1] [LIFT_FLAG2]
+ 1             0             999           10            7             1             0             0             3             1             0 
+
+! Linha 5:
+! [IPRUNI (1=pressão uniforme lado direito)] [IPLUNI (1=uniforme lado esquerdo)]
+! [NPRCS (nº coef. Fourier direita, se não uniforme)]
+! [NPLCS (nº coef. Fourier esquerda, se não uniforme)]
+1             1             0             0
+
+! Linha 6 – geometria global do filme:
+! [CINLET (folga radial na entrada, m)] [CEXIT (folga radial na saída, m)]
+! [D_JOURNAL (diâmetro do rotor, m)] [L_TOTAL (comprimento axial, m)]
+! [AR (comprimento axial do recess, hidro; 0 p/ hidro/selo)]
+! [HREC (profundidade do recess, m)] [VSUP_ORIF (volume no orifício, m³)]
+! [LR (comprimento axial à direita, m)]
+ 0.00010425    0.00010425    0.125         0.085         0             0             0             0.0425 
+
+! Linha 7 – Pad 1 (geometria angular):
+! [PAD_RECESS1 (nº de pockets no pad; 0 p/ hidrodinâmico)]
+! [PAD_LEADING1 (ângulo da borda de ataque, graus, medido a partir de -X)]
+! [PAD_ARC1 (comprimento angular do pad, graus)]
+! [PAD_ROT_GUESS1 (rotação inicial do pad, rad; tilting pad)]
+ 0             24            132           0 
+
+! Linha 8 – Pad 2 (geometria angular):
+! [PAD_RECESS2] [PAD_LEADING2] [PAD_ARC2] [PAD_ROT_GUESS2]
+ 0             204           132           0 
+
+! Linhas 9–11 – alinhamento/posição do rotor e parâmetros geométricos auxiliares:
+! Em geral, estes campos controlam a posição estática do journal
+! (excentricidade Ex, Ey) e possíveis rotações globais / pivô.
+! Para uso normal recomendam-se os valores do DEFAULT.
+! Linha 9: aproximadamente Ex e Ey (Ex≈0, Ey≈folga radial)
+ 1E-20         0.00010425 
+
+! Linha 10: parâmetros geométricos auxiliares (por ex. referência axial / raio de pivô, etc.)
+! Normalmente manter como no DEFAULT, a menos que se esteja modelando desalinhamento específico.
+ 0.085         0.00010425 
+
+! Linha 11: demais parâmetros de alinhamento/pivô (rotX, rotY, posição axial, etc.)
+! Aqui todos zerados (ou 1E-20), o que significa eixo sem inclinação global.
+ 0             0             0             0             0             1E-20         1E-20 
+
+! Linhas 12–13 – propriedades termofísicas do fluido:
+! Linha 12:
+! [MU_SUP (μ no suprimento, Pa·s)] [RHO_SUP (ρ no suprimento, kg/m³)]
+! [MU_DISC (μ na descarga, Pa·s)] [RHO_DISC (ρ na descarga, kg/m³)]
+! [COMPRESS (compressibilidade volumétrica, m²/N)]
+ 0.01694       876           0.01694       876           0.0000000006 
+
+! Linha 13:
+! [CP (J/kg·K)] [K_FLUID (W/m·K)] [BETA_T (coef. expansão térmica, 1/K)]
+! [VTC (coef. variação de viscosidade com T, 1/K)]
+ 1959          0.131         0.0008        0.0102 
+
+! Linha 14:
+! [RPM (velocidade de rotação do eixo, rpm)]
+ 99000 
+
+! Linhas 15–17 – pressões/densidades/viscosidades de suprimento/descarga (vários circuitos):
+! Normalmente usados para definir P_supply, P_discharge,
+! e propriedades associadas em diferentes regiões de alimentação/saída.
+! Linha 15: conjunto 1 (tipicamente P_supply1, ρ1, μ1, coef. perda1)
+ 100000        876           0.01694       0 
+
+! Linha 16: conjunto 2 (P_supply2, ρ2, μ2, coef. perda2)
+ 100000        876           0.01694       0 
+
+! Linha 17: conjunto 3 (P_sup3, P_disc3, μ_sup3, μ_disc3, ρ_sup3, ρ_disc3)
+! No caso deste DEFAULT, todos iguais (sistema simples com mesma pressão dos dois lados).
+ 100000        100000        0.01694       0.01694       876           876 
+
+! Linha 18 – orifícios / selo / swirl:
+! [CD_ORIF (coef. descarga)] [D_ORIF (diâmetro, m – 0 se não usado)]
+! [K_INLET_SEAL (perda entrada selo)] [SWIRL_INLET (swirl ratio)]
+! [P_REC_RATIO (P_recess/P_supply)]
+ 1             0             0.2           0.5           0.5 
+
+! Linha 19 – perdas em pocket / bordas (hidrostático / selos):
+! [K_POCKET_UP] [K_POCKET_DOWN] [K_POCKET_AXIAL]
+! [K_EXTRA_SEAL] [K_LEADING_EDGE]
+! Aqui todos 0, indicando que o modelo está usando apenas as perdas padrão.
+ 0             0             0             0             0 
+
+! Linha 20 – T de suprimento, rugosidades e modelo de turbulência:
+! [T_SUPPLY (K)] [ROUGH_ROTOR (rugosidade relativa do rotor)]
+! [ROUGH_STATOR (rugosidade relativa do estator)]
+! [A_TURB] [B_TURB] [PARÂMETRO_EXTRA_TURB] [EXPO_TURB]
+! Neste caso: Moody/friction factor com A≈0, B≈0.001375, expoente 0.3333 e Re*escala 5e5.
+ 333.9         1E-20         0             0             0.001375      500000        0.3333 
+
+! Linha 21 – fatores de relaxação e critérios de convergência:
+! [RELAX_MOM] [RELAX_P] [RELAX_T]
+! [ERR_MASS_LAND] [ERR_P_RECESS] [ERR_EXTRA]
+! (0.8,0.6,0.9) = under-relax; (0.01,0.01,1e-4) = tolerâncias.
+ 0.8           0.6           0.9           0.01          0.01          0.0001 
+
+! Linha 22 – preload e offset do pivô:
+! [PRELOAD (adim)] [OFFSET_PIVOT (% do arco)]
+ 0             0.5 
+
+! Linha 23 – coeficiente de mistura térmica entre pads:
+! [THERM_MIX] – fração de fluido "quente" recirculado (0=fresco,1=100% recirculação)
+ 0.5 
+
+! Linha 24 – parâmetros de complacência (normalmente não usados):
+! [COMP_P_FACTOR] [COMP_LOSS_FACTOR] [COMP_RELAX]
+! Defaults típicos: 0, 0, 1.
+ 0             0             1 
+
+! Linha 25 – temperaturas de referência do rotor e da superfície interna do pad:
+! [T_ROTOR (K)] [T_PAD_INNER (K)]
+ 363.3         353.3 
+
+! Linha 26 – profundidade de célula honeycomb (para selos tipo honeycomb):
+! [HONEYCOMB_DEPTH (m)] – 0 => sem honeycomb
+ 0 
+
+! Linha 27 – configuração da análise dinâmica / tabela de casos:
+! [N_CASES] [FREQ_OPTION]
+! N_CASES = número de linhas seguintes (casos de rotação).
+! FREQ_OPTION típico: 1 = análise síncrona, 2 = não síncrona (ver manual).
+ 9             2 
+
+! Linhas 28–36 – casos de rotação/frequência para cálculo de coeficientes:
+! Cada linha: [SPEED (rpm)] [FLAG1] [FLAG2] [FLAG3] [LIMITE/IDENTIFICADOR]
+! No DEFAULT, FLAG1=1, FLAG2=1, FLAG3=0, LIMITE=10000 para todos os casos.
+! Caso 1
+ 400           1             1             0             10000 
+
+! Caso 2
+ 850           1             1             0             10000 
+
+! Caso 3
+ 1300          1             1             0             10000 
+
+! Caso 4
+ 1750          1             1             0             10000 
+
+! Caso 5
+ 2200          1             1             0             10000 
+
+! Caso 6
+ 2650          1             1             0             10000 
+
+! Caso 7
+ 3100          1             1             0             10000 
+
+! Caso 8
+ 3550          1             1             0             10000 
+
+! Caso 9
+ 4000          1             1             0             10000 
